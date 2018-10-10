@@ -58,17 +58,6 @@ typedef struct
 Player;
 
 //
-// A small handful of functions that are referenced across multiple files.
-//
-
-void draw_text(int x, int y, u32 colour, char * text, ...);
-void create_network(int port);
-void join_network(char * address_with_optional_port);
-void set_player_name(char * name);
-void toggle_fullscreen();
-void send_string_over_network(char * string);
-
-//
 // GLOBALS
 //
 
@@ -148,6 +137,17 @@ char map[] =
 Player players[max_players];
 int player_count = 8;
 Player * player = players;
+
+//
+// A small handful of functions that are referenced across multiple files.
+//
+
+void draw_text(int x, int y, u32 colour, char * text, ...);
+void create_network(int port);
+void join_network(char * address_with_optional_port);
+void set_player_name(char * name);
+void toggle_fullscreen();
+void send_string_over_network(char * string);
 
 //
 // LOCAL INCLUDES
