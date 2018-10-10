@@ -6,4 +6,5 @@
 !*.c
 !*.sh
 !*.md
+!*.png
 !.gitignore
