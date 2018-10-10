@@ -1,0 +1,9 @@
+# Ignore everything.
+*
+
+# Whitelist directories and a few file types.
+!*/
+!*.c
+!*.sh
+!*.md
+!.gitignore
