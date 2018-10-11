@@ -1,6 +1,9 @@
-//
-// player.c
-//
+/*
+    Labyrinth
+    Benedict Henshaw, 2018
+    player.c - Managing players, their movement, and their actions.
+               Lots of gameplay code lives here.
+*/
 
 void update_player_angle(f32 angle_delta)
 {

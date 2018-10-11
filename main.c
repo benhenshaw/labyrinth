@@ -1,6 +1,9 @@
-//
-// main.c
-//
+/*
+    Labyrinth
+    Benedict Henshaw, 2018
+    main.c - Entry point. Where all globals, type definitions,
+             and includes live.
+*/
 
 #include <stdint.h>
 #include <stdio.h>

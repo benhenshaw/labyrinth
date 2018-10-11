@@ -1,6 +1,8 @@
-//
-// net.c
-//
+/*
+    Labyrinth
+    Benedict Henshaw, 2018
+    network.c - Server and client networking.
+*/
 
 void set_player_name(char * name)
 {
