@@ -4,6 +4,7 @@
 # Whitelist directories and a few file types.
 !*/
 !*.c
+!*.h
 !*.sh
 !*.md
 !*.png
