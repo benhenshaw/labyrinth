@@ -79,6 +79,7 @@ void handle_network()
             if (event.type == ENET_EVENT_TYPE_RECEIVE)
             {
                 push_console_string((char *)event.packet->data);
+                enet_packet_destroy(event.packet);
             }
             else if (event.type == ENET_EVENT_TYPE_CONNECT)
             {
@@ -101,7 +102,8 @@ void send_string_over_network(char * string)
     if (network_mode)
     {
         ENetPacket * packet = enet_packet_create(string, strlen(string) + 1, ENET_PACKET_FLAG_RELIABLE);
-        if (network_mode == NETMODE_CLIENT)      enet_peer_send (remote_server, 0, packet);
+        if (network_mode == NETMODE_CLIENT)      enet_peer_send(remote_server, 0, packet);
         else if (network_mode == NETMODE_SERVER) enet_host_broadcast(local_host, 0, packet);
+        enet_packet_destroy(packet);
     }
 }
