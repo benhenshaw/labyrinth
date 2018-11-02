@@ -184,7 +184,7 @@ void draw_text(int x, int y, u32 colour, char * text, ...)
                     if (font_pixels[ix + iy * total_width])
                     {
                         // Draw with black drop-shadow.
-                        set_screen_pixel(sx + x_offset, sy + y_offset+1, 0);
+                        set_screen_pixel(sx + x_offset, sy + y_offset + 1, 0);
                         set_screen_pixel(sx + x_offset, sy + y_offset, colour);
                     }
                 }

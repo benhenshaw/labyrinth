@@ -95,6 +95,8 @@ bool parse_command(char * string)
             }
         }
 
+        if (arg == string) arg = NULL;
+
         // TODO: (command_name, function, arguments) list, with type checking.
         #define CMD(s) strncmp(string+1, #s, cmd_length) == 0
 
@@ -104,7 +106,7 @@ bool parse_command(char * string)
         }
         else if (CMD(echo))
         {
-            push_console_string(arg);
+            if (arg) push_console_string(arg);
         }
         else if (CMD(host))
         {
@@ -112,12 +114,27 @@ bool parse_command(char * string)
         }
         else if (CMD(join))
         {
-            join_network(arg);
+            if (arg) join_network(arg);
         }
         else if (CMD(name))
         {
-            set_player_name(arg);
-            push_console_string("Set name to '%s'.", arg);
+            if (arg)
+            {
+                set_player_name(arg);
+                push_console_string("Set name to '%s'.", arg);
+            }
+            else
+            {
+                push_console_string("Usage: /name your_name_here");
+            }
+        }
+        else if (CMD(fov))
+        {
+            if (arg) view_angle = strtod(arg, NULL);
+        }
+        else if (CMD(view_accuracy))
+        {
+            if (arg) view_accuracy = strtod(arg, NULL);
         }
         else if (CMD(fullscreen))
         {

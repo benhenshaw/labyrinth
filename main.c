@@ -68,6 +68,8 @@ SDL_Window * window;
 SDL_Renderer * renderer;
 SDL_Texture * screen_texture;
 
+u32 audio_device = -1;
+
 u32 * screen_pixels;
 f32 * depth_buffer;
 int screen_width = 640;
@@ -161,6 +163,11 @@ void send_string_over_network(char * string);
 #include "graphics.c"
 #include "network.c"
 #include "player.c"
+
+int audio_callback(void * data, u8 * stream, int byte_count)
+{
+    // mix_audio(mixer, stream, byte_count / (sizeof(f32) * 2));
+}
 
 int main(int argument_count, char ** arguments)
 {
@@ -256,6 +263,7 @@ int main(int argument_count, char ** arguments)
                     else
                     {
                         entry_active = true;
+                        pressing_up = pressing_down = pressing_left = pressing_right = false;
                     }
                 }
                 else if (scancode == SDL_SCANCODE_BACKSPACE && pressed)
@@ -272,6 +280,7 @@ int main(int argument_count, char ** arguments)
                 else if (!entry_active && scancode == SDL_SCANCODE_SLASH && pressed)
                 {
                     entry_active = true;
+                    pressing_up = pressing_down = pressing_left = pressing_right = false;
                 }
                 else if (entry_active && scancode == SDL_SCANCODE_UP)
                 {
@@ -318,6 +327,14 @@ int main(int argument_count, char ** arguments)
         render_background();
         render_player_view(player);
         render_players();
+
+        for (int i = 0; i < screen_width * screen_height; ++i)
+        {
+            u32 random_colour = random_int_range(-5, 5);
+            random_colour = rgba(random_colour, random_colour, random_colour, 255);
+            screen_pixels[i] += random_colour;
+        }
+
         draw_crosshair();
         draw_console();
         display_screen();
