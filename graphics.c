@@ -40,7 +40,7 @@ void display_screen()
 {
     SDL_Delay(1);
     SDL_RenderClear(renderer);
-    SDL_UpdateTexture(screen_texture, NULL, screen_pixels, screen_width * sizeof(u32));
+    SDL_UpdateTexture(screen_texture, NULL, screen_pixels, screen_width * sizeof(*screen_pixels));
     SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
     SDL_RenderPresent(renderer);
 }
@@ -120,8 +120,7 @@ u32 get_texture_pixel(int texture_index, int x, int y)
 
 void set_screen_pixel(int x, int y, u32 colour)
 {
-    if (x >= 0 && x < screen_width &&
-        y >= 0 && y < screen_height)
+    if (x >= 0 && x < screen_width && y >= 0 && y < screen_height)
     {
         screen_pixels[x + y * screen_width] = colour;
     }
@@ -177,18 +176,29 @@ void draw_text(int x, int y, u32 colour, char * text, ...)
             int text_start_x = font_char_width * (formatted_text[c] - ' ');
             int max_x = min(x + font_char_width, screen_width);
             int max_y = min(y + font_char_height, screen_height);
+
             for (int sy = y, iy = 0; sy < max_y; ++sy, ++iy)
             {
                 for (int sx = x, ix = text_start_x; sx < max_x; ++sx, ++ix)
                 {
                     if (font_pixels[ix + iy * total_width])
                     {
-                        // Draw with black drop-shadow.
                         set_screen_pixel(sx + x_offset, sy + y_offset + 1, 0);
+                    }
+                }
+            }
+
+            for (int sy = y, iy = 0; sy < max_y; ++sy, ++iy)
+            {
+                for (int sx = x, ix = text_start_x; sx < max_x; ++sx, ++ix)
+                {
+                    if (font_pixels[ix + iy * total_width])
+                    {
                         set_screen_pixel(sx + x_offset, sy + y_offset, colour);
                     }
                 }
             }
+
             x_offset += font_char_width;
         }
         else if (formatted_text[c] == '\n')
@@ -269,12 +279,17 @@ void render_player_view(Player * player)
         f32 ca = (1.0f - screen_x / (f32)screen_width) * (player->angle - view_angle / 2.0f)
                        + screen_x / (f32)screen_width  * (player->angle + view_angle / 2.0f);
 
+        f32 cca = cosf(ca);
+        f32 sca = sinf(ca);
+
         // Incrementally step forward along this angle, away from the player.
-        for (f32 distance = 0.0f; distance < view_distance; distance += view_accuracy)
+        for (f32 distance = MIN_DISTANCE_FROM_WALL;
+            distance < view_distance;
+            distance += view_accuracy)
         {
             // Find the world coordinates of this stepping point.
-            f32 cx = player->x + cosf(ca) * distance;
-            f32 cy = player->y + sinf(ca) * distance;
+            f32 cx = player->x + cca * distance;
+            f32 cy = player->y + sca * distance;
 
             // If these coordinates are inside a tile that is not empty.
             int tile_index = (int)cx + (int)cy * map_width;

@@ -72,9 +72,9 @@ u32 audio_device = -1;
 
 u32 * screen_pixels;
 f32 * depth_buffer;
-int screen_width = 640;
-int screen_height = 480;
-int screen_scale = 3;
+int screen_width  = 256;
+int screen_height = 256;
+int screen_scale  = 1;
 
 u32 * texture_pixels;
 int texture_size;
@@ -92,7 +92,7 @@ int font_char_height;
 
 f32 view_accuracy = 0.01f;
 f32 view_distance = 32;
-f32 view_angle = M_PI / 3.0f * (480.0f / 640.0f);
+f32 view_angle    = M_PI / 3.0f * (480.0f / 640.0f);
 
 f32 turn_speed = 0.005f;
 
@@ -126,9 +126,9 @@ char map[] =
     "1              0"
     "1      11111   0"
     "1     0        0"
-    "0     0  1110000"
-    "0     3        0"
-    "0   10000      0"
+    "2     0  1110000"
+    "2     3        0"
+    "2    10000     0"
     "0   0   11100  0"
     "0   0   0      0"
     "0   0   1  00000"
@@ -142,6 +142,8 @@ char map[] =
 Player players[max_players];
 int player_count = 8;
 Player * player = players;
+
+#define MIN_DISTANCE_FROM_WALL 0.1f
 
 //
 // A small handful of functions that are referenced across multiple files.
@@ -164,7 +166,7 @@ void send_string_over_network(char * string);
 #include "network.c"
 #include "player.c"
 
-int audio_callback(void * data, u8 * stream, int byte_count)
+void audio_callback(void * data, u8 * stream, int byte_count)
 {
     // mix_audio(mixer, stream, byte_count / (sizeof(f32) * 2));
 }
@@ -178,12 +180,13 @@ int main(int argument_count, char ** arguments)
 
     SDL_Rect display_bounds;
     SDL_GetDisplayBounds(0, &display_bounds);
-    screen_width  = display_bounds.w / screen_scale;
-    screen_height = display_bounds.h / screen_scale;
+    // screen_width  = display_bounds.w / screen_scale;
+    // screen_height = display_bounds.h / screen_scale;
 
     window = SDL_CreateWindow("",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        screen_width * 2, screen_height * 2, SDL_WINDOW_ALLOW_HIGHDPI);
+        screen_width * screen_scale, screen_height * screen_scale,
+        SDL_WINDOW_ALLOW_HIGHDPI);
     if (!window) panic_exit("Could not create window\n%s", SDL_GetError());
 
     renderer = SDL_CreateRenderer(window, -1,
@@ -249,6 +252,10 @@ int main(int argument_count, char ** arguments)
                 else if (!entry_active && (scancode == SDL_SCANCODE_RIGHT || scancode == SDL_SCANCODE_D))
                 {
                     pressing_right = pressed;
+                }
+                else if (!entry_active && scancode == SDL_SCANCODE_SPACE)
+                {
+                    shoot();
                 }
                 else if (scancode == SDL_SCANCODE_F11 && pressed)
                 {

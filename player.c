@@ -32,7 +32,7 @@ void update_player_position(Player * player, f32 delta_time)
     int current_tile_y = player->y;
 
     // How close to a wall the player can get before a collision occurs.
-    f32 radius = 0.1f;
+    f32 radius = MIN_DISTANCE_FROM_WALL;
 
     // Calculating x and y movement separately allows one to occur while the
     // other is blocked. This allows players to slide smoothly against walls.
